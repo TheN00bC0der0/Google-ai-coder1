@@ -18,6 +18,10 @@ class VideoUtilityApp(tk.Tk):
         self.geometry("600x800") # Increased window height for the new button
         self.configure(bg="#2c3e50") # Dark background
         
+        # Define the base directory relative to the script's location
+        # This is the key change to fix the file path issue.
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Video playback properties
         self.cap = None
         self.is_playing = False
@@ -227,7 +231,8 @@ class VideoUtilityApp(tk.Tk):
             messagebox.showerror("Error", f"The file '{video_file}' was not found.")
             return
 
-        output_dir = "last_frame"
+        # Corrected: Use self.base_dir to create the folder in the script's directory
+        output_dir = os.path.join(self.base_dir, "last_frame")
         os.makedirs(output_dir, exist_ok=True)
 
         video_capture = cv2.VideoCapture(video_file)
@@ -285,7 +290,8 @@ class VideoUtilityApp(tk.Tk):
             return
 
         base_name, extension = os.path.splitext(os.path.basename(video_file))
-        output_dir = "reversed_clip"
+        # Corrected: Use self.base_dir to create the folder in the script's directory
+        output_dir = os.path.join(self.base_dir, "reversed_clip")
         os.makedirs(output_dir, exist_ok=True)
 
         counter = 1
@@ -388,7 +394,8 @@ class VideoUtilityApp(tk.Tk):
         tk.Label(selection_window, text="Automatically compiling clips. Please wait...", bg="#2c3e50", fg="#ecf0f1", font=("Arial", 14, "bold")).pack(expand=True)
 
         selected_indices = list(range(len(scene_list)))
-        output_dir = "compiled_clips"
+        # Corrected: Use self.base_dir to create the folder in the script's directory
+        output_dir = os.path.join(self.base_dir, "compiled_clips")
         os.makedirs(output_dir, exist_ok=True)
         threading.Thread(target=self._compile_selected_clips_thread, args=(video_file, scene_list, selected_indices, output_dir, selection_window)).start()
 
@@ -563,7 +570,8 @@ class VideoUtilityApp(tk.Tk):
             messagebox.showerror("Error", "Please add at least one clip to merge.")
             return
 
-        output_dir = "merged_clips"
+        # Corrected: Use self.base_dir to create the folder in the script's directory
+        output_dir = os.path.join(self.base_dir, "merged_clips")
         os.makedirs(output_dir, exist_ok=True)
         base_name = "merged_video"
         extension = ".mp4"
